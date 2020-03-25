@@ -1,6 +1,8 @@
 # Amazon CodeGuru Profiler demo application
 
-Simple application for demonstrating the features of Amazon CodeGuru Profiler.
+Simple application for demonstrating the features of [Amazon CodeGuru Profiler](https://aws.amazon.com/codeguru/).
+
+![CodeGuru Profiler Console Screenshot](CodeGuruProfilerScreenshot.png)
 
 ## Quick demo
 
@@ -18,16 +20,16 @@ operations alongside some IO-heavy operations.
 It consists chiefly of two components which run in parallel, the task publisher
 and the image processor.
 
-CodeGuru Profiler runs inside the application, in the same way any real application 
+CodeGuru Profiler runs inside the application, in the same way any real application
 would use it. It collects and reports profiling data about the application, ready to
 be viewed in the AWS console.
 
-##### TaskPublisher
+##### [`TaskPublisher`](src/main/java/com/company/demoapplication/TaskPublisher.java)
 
-Checks the S3 bucket for available images, and submits the name of some of these images 
+Checks the S3 bucket for available images, and submits the name of some of these images
 to the SQS queue.
 
-##### ImageProcessor
+##### [`ImageProcessor`](src/main/java/com/company/demoapplication/ImageProcessor.java)
 
 Polls SQS for names of images to process. Processing an image involves downloading
 it from S3, applying some image transforms (e.g. converting to monochrome), and
@@ -48,13 +50,13 @@ aws configure # set up your AWS credentials and region as usual
 aws codeguruprofiler create-profiling-group --profiling-group-name DemoApplication-WithIssues
 aws codeguruprofiler create-profiling-group --profiling-group-name DemoApplication-WithoutIssues
 aws s3 mb s3://demo-application-test-bucket-1092734-REPLACE-ME
-aws sqs create-queue --queue-name DemoApplicationQueue 
+aws sqs create-queue --queue-name DemoApplicationQueue
 ```
 
 ## How to run
 
 ```bash
-export DEMO_APP_SQS_URL="https://eu-west-1.queue.amazonaws.com/123456789012/DemoApplicationQueue"
+export DEMO_APP_SQS_URL="https://eu-west-1.queue.amazonaws.com/YOUR-ACCOUNT-ID/DemoApplicationQueue"
 export DEMO_APP_BUCKET_NAME="demo-application-test-bucket-1092734-REPLACE-ME"
 mvn clean install
 mvn exec:java -P without-issues # or try with-issues to demonstrate common performance issues
@@ -62,6 +64,12 @@ mvn exec:java -P without-issues # or try with-issues to demonstrate common perfo
 
 Run this for 24 hours to get plenty of data, along with a recommendations report.
 
+**Note**: When running `with-issues`, you'll see plenty of `Expensive exception`, `Pointless work` and other debug
+gibberish being logged. This is **expected**! This is an example of a badly coded application, and you'll be able to see
+how these issues show up on the CodeGuru Profiler console.
+
+So don't worry 😎 -- we totally know about it.
+
 ### License
 
-This code is licensed under the MIT-0 License. See the LICENSE file.
+This code is licensed under the MIT-0 License. See the [LICENSE](LICENSE) file.
