@@ -37,7 +37,9 @@ uploading the result back to S3.
 
 ## Setup
 
-Components that need to be setup before running:
+Make sure you have installed the latest version of [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html).
+
+Setup the required components by running the following ```aws``` commands:
 
 1. Create two profiling groups in CodeGuru Profiler, named `DemoApplication-WithIssues` and `DemoApplication-WithoutIssues`
 2. Create an SQS queue
