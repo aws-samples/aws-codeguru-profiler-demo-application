@@ -122,6 +122,16 @@ public class Main {
             return new ObjectMapper();
         }
     }
+    
+    static {
+        sqsQueueUrl = getEnvironmentVariable("DEMO_APP_SQS_URL", "https://sqs.eu-west-2.amazonaws.com/123456789000/ImageQueue");
+        bucketName = getEnvironmentVariable("DEMO_APP_BUCKET_NAME", "test-images-for-my-demo-app");
+        if (Objects.equals(System.getProperty("withIssues"), "true")) {
+            logger().info("Running with performance issues.");
+            withIssues = true;
+        } else {
+            logger().info("Running without performance issues.");
+        }
 
     static Logger logger() {
         if (reuseLogger && sharedLogger != null) {
