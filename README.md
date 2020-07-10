@@ -57,14 +57,32 @@ aws sqs create-queue --queue-name DemoApplicationQueue
 
 ## How to run
 
+The demo application can be run in two modes: `with-issues` and `without-issues`. Thus, you can compare how an
+optimized version of the application compares to one with performance issues.
+
+To run the `with-issues` version, use the following instructions:
+
 ```bash
 export DEMO_APP_SQS_URL="https://eu-west-1.queue.amazonaws.com/YOUR-ACCOUNT-ID/DemoApplicationQueue"
 export DEMO_APP_BUCKET_NAME="demo-application-test-bucket-1092734-REPLACE-ME"
+export AWS_CODEGURU_TARGET_REGION=FILL-IN-HERE-THE-REGION-YOU-ARE-USING
+export AWS_CODEGURU_PROFILER_GROUP_NAME=DemoApplication-WithIssues
 mvn clean install
-mvn exec:java -P without-issues # or try with-issues to demonstrate common performance issues
+java -javaagent:codeguru-profiler-java-agent-standalone-1.0.0.jar -DwithIssues=true -jar target/DemoApplication-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 
-Run this for 24 hours to get plenty of data, along with a recommendations report.
+To run the `without-issues` version, use the following instructions:
+
+```bash
+export DEMO_APP_SQS_URL="https://eu-west-1.queue.amazonaws.com/YOUR-ACCOUNT-ID/DemoApplicationQueue"
+export DEMO_APP_BUCKET_NAME="demo-application-test-bucket-1092734-REPLACE-ME"
+export AWS_CODEGURU_TARGET_REGION=FILL-IN-HERE-THE-REGION-YOU-ARE-USING
+export AWS_CODEGURU_PROFILER_GROUP_NAME=DemoApplication-WithoutIssues
+mvn clean install
+java -javaagent:codeguru-profiler-java-agent-standalone-1.0.0.jar -DwithIssues=false -jar target/DemoApplication-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+
+Run this for a few hours to get plenty of data, along with a recommendations report.
 
 **Note**: When running `with-issues`, you'll see plenty of `Expensive exception`, `Pointless work` and other debug
 gibberish being logged. This is **expected**! This is an example of a badly coded application, and you'll be able to see

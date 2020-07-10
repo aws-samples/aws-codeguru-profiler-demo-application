@@ -5,8 +5,6 @@
 
 package com.company.demoapplication;
 
-import com.amazonaws.services.codeguruprofiler.AmazonCodeGuruProfilerClientBuilder;
-import com.amazonaws.services.codeguruprofiler.model.DescribeProfilingGroupRequest;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.sqs.AmazonSQS;
@@ -14,7 +12,6 @@ import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import software.amazon.codeguruprofilerjavaagent.Profiler;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -74,8 +71,6 @@ public class Main {
     static ExecutorService sharedExecutor = executor();
 
     public static void main(String[] args) throws Exception {
-        startProfiler();
-
         // Publisher
         ScheduledExecutorService publisherScheduler = Executors.newScheduledThreadPool(1);
         publisherScheduler.scheduleWithFixedDelay(() -> TaskPublisher.publishImageTransformTask(10), 0, 5, TimeUnit.SECONDS);
@@ -86,21 +81,6 @@ public class Main {
         while (true) {
             executor().submit(imageProcessor::run).get();
         }
-    }
-
-    private static void startProfiler() {
-        String profilingGroupName;
-        if (withIssues) {
-            profilingGroupName = "DemoApplication-WithIssues";
-        } else {
-            profilingGroupName = "DemoApplication-WithoutIssues";
-        }
-
-        // ensure the profiling group exists, or fail early with a reasonable error message
-        AmazonCodeGuruProfilerClientBuilder.defaultClient().describeProfilingGroup(new DescribeProfilingGroupRequest().withProfilingGroupName(profilingGroupName));
-
-        Profiler profiler = new Profiler.Builder().profilingGroupName(profilingGroupName).build();
-        profiler.start();
     }
 
     static AmazonS3 s3Client() {
