@@ -71,7 +71,8 @@ export AWS_CODEGURU_TARGET_REGION=YOUR-AWS-REGION
 # Run the demo!
 export AWS_CODEGURU_PROFILER_GROUP_NAME=DemoApplication-WithIssues
 mvn clean install
-java -javaagent:codeguru-profiler-java-agent-standalone-1.0.0.jar -jar target/DemoApplication-1.0-jar-with-dependencies.jar with-issues
+java -javaagent:codeguru-profiler-java-agent-standalone-1.0.0.jar \
+  -jar target/DemoApplication-1.0-jar-with-dependencies.jar with-issues
 ```
 
 * To run the `without-issues` version, use the following instructions. Remember to replace `YOUR-ACCOUNT-ID`, `YOUR-AWS-REGION` and `YOUR-BUCKET-REPLACE-ME` as appropriate.
@@ -85,7 +86,8 @@ export AWS_CODEGURU_TARGET_REGION=YOUR-AWS-REGION
 # Run the demo!
 export AWS_CODEGURU_PROFILER_GROUP_NAME=DemoApplication-WithoutIssues
 mvn clean install
-java -javaagent:codeguru-profiler-java-agent-standalone-1.0.0.jar -jar target/DemoApplication-1.0-jar-with-dependencies.jar without-issues
+java -javaagent:codeguru-profiler-java-agent-standalone-1.0.0.jar \
+  -jar target/DemoApplication-1.0-jar-with-dependencies.jar without-issues
 ```
 
 Run this for a few hours to get plenty of data, along with a recommendations report.
