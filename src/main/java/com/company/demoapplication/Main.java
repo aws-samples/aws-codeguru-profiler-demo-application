@@ -25,7 +25,7 @@ public class Main {
     static String bucketName;
 
     static String sampleImagesFolder = "input-images/";
-    static boolean withIssues = false;
+    static boolean withIssues;
 
     private static String getEnvironmentVariable(String key, String exampleValue) {
         String value = System.getenv(key);
@@ -38,31 +38,10 @@ public class Main {
     static {
         sqsQueueUrl = getEnvironmentVariable("DEMO_APP_SQS_URL", "https://sqs.eu-west-2.amazonaws.com/123456789000/ImageQueue");
         bucketName = getEnvironmentVariable("DEMO_APP_BUCKET_NAME", "test-images-for-my-demo-app");
-        if (Objects.equals(System.getProperty("withIssues"), "true")) {
-            logger().info("Running with performance issues.");
-            withIssues = true;
-        } else {
-            logger().info("Running without performance issues.");
-        }
     }
 
     static boolean reuseMapper;
     static boolean reuseLogger;
-    static boolean reuseExecutor;
-
-    static {
-        /*
-          This demo application can be configured to demonstrate some common performance issues,
-          for example expensive logging or forgetting to re-use serializers.
-         */
-        if (withIssues) {
-            reuseMapper = false;
-            reuseLogger = false;
-        } else {
-            reuseMapper = true;
-            reuseLogger = true;
-        }
-    }
 
     static AmazonS3 sharedS3 = s3Client();
     static AmazonSQS sharedSqs = sqsClient();
@@ -71,6 +50,27 @@ public class Main {
     static ExecutorService sharedExecutor = executor();
 
     public static void main(String[] args) throws Exception {
+        /*
+          This demo application can be configured to demonstrate some common performance issues,
+          for example expensive logging or forgetting to re-use serializers.
+         */
+        if (args.length > 0 && args[0].equals("with-issues")) {
+            logger().info("Running with performance issues.");
+
+            withIssues = true;
+            reuseMapper = false;
+            reuseLogger = false;
+        } else if (args.length > 0 && args[0].equals("without-issues")) {
+            logger().info("Running without performance issues.");
+
+            withIssues = false;
+            reuseMapper = true;
+            reuseLogger = true;
+        } else {
+            logger().error("Invalid arguments: '" + String.join(" ", args) + "'. Valid arguments are: with-issues or without-issues.");
+            System.exit(-1);
+        }
+
         // Publisher
         ScheduledExecutorService publisherScheduler = Executors.newScheduledThreadPool(1);
         publisherScheduler.scheduleWithFixedDelay(() -> TaskPublisher.publishImageTransformTask(10), 0, 5, TimeUnit.SECONDS);
