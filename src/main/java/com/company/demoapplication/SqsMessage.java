@@ -7,6 +7,7 @@ package com.company.demoapplication;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +43,7 @@ class SqsMessage {
     static SqsMessage deserialize(String serialized) {
         try {
             return Main.objectMapper().readValue(serialized, SqsMessage.class);
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
