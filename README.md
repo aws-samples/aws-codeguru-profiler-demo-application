@@ -70,7 +70,7 @@ export AWS_CODEGURU_TARGET_REGION=YOUR-AWS-REGION
 
 # Run the demo!
 export AWS_CODEGURU_PROFILER_GROUP_NAME=DemoApplication-WithIssues
-mvn clean install
+mvn clean install # generates the DemoApplication-1.0-jar-with-dependencies.jar
 java -javaagent:codeguru-profiler-java-agent-standalone-1.0.0.jar \
   -jar target/DemoApplication-1.0-jar-with-dependencies.jar with-issues
 ```
@@ -85,7 +85,7 @@ export AWS_CODEGURU_TARGET_REGION=YOUR-AWS-REGION
 
 # Run the demo!
 export AWS_CODEGURU_PROFILER_GROUP_NAME=DemoApplication-WithoutIssues
-mvn clean install
+mvn clean install # generates the DemoApplication-1.0-jar-with-dependencies.jar
 java -javaagent:codeguru-profiler-java-agent-standalone-1.0.0.jar \
   -jar target/DemoApplication-1.0-jar-with-dependencies.jar without-issues
 ```
