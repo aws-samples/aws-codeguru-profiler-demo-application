@@ -68,9 +68,12 @@ class ImageProcessor {
     }
 
     // always re-use this one, because otherwise it just takes up too much of the profile opening ssl connections
-    static AmazonSQS sqsClient = AmazonSQSClientBuilder.defaultClient();
+    //static AmazonSQS sqsClient = AmazonSQSClientBuilder.defaultClient();
 
     private List<Message> extractTasks(String sqsQueueURL) {
+
+    AmazonSQS sqsClient = AmazonSQSClientBuilder.defaultClient();
+
         ReceiveMessageResult response = sqsClient.receiveMessage(
                 new ReceiveMessageRequest()
                         .withMessageAttributeNames("key")
