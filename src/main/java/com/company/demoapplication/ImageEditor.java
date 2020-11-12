@@ -17,9 +17,9 @@ class ImageEditor {
     }
 
     static BufferedImage monochrome(BufferedImage image) {
-        BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
-        Graphics2D graphics = newImage.createGraphics();
-        graphics.drawImage(image, 0, 0, null);
+    BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
+    Graphics2D graphics = newImage.createGraphics();
+    graphics.drawImage(image, 0, 0, null);
         return newImage;
     }
 }
