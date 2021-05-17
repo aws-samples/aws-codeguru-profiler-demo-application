@@ -61,12 +61,15 @@ public class Main {
             withIssues = true;
             reuseMapper = false;
             reuseLogger = false;
+            profileGroupName = "codeguru-java-app-with-problems";
         } else if (args.length > 0 && args[0].equals("without-issues")) {
             logger().info("Running without performance issues.");
 
             withIssues = false;
             reuseMapper = true;
             reuseLogger = true;
+            profileGroupName = "codeguru-java-app-without-problems";
+            
         } else {
             logger().error("Invalid arguments: '" + String.join(" ", args) + "'. Valid arguments are: with-issues or without-issues.");
             System.exit(-1);
