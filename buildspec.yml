@@ -34,7 +34,6 @@ phases:
   
   post_build:
     commands:
-      - EKS_KUBECTL_ROLE_ARN=arn:aws:iam::338918620411:role/eksctl-codeguru-cluster-ServiceRole-10S2R4QXTPDM5
       - EKS_CLUSTER_NAME=codeguru
       - CREDENTIALS=$(aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900)
       - export AWS_ACCESS_KEY_ID="$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
