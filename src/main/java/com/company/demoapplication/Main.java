@@ -76,11 +76,11 @@ public class Main {
         }
         
         Profiler.builder()
-        .profilingGroupName(profileGroupName)
-        .awsCredentialsProvider(AwsCredsProvider.getCredentials(roleArn, sessionName))
-        .awsRegionToReportTo(awsRegion)
-        .build()
-        .start();
+	        .profilingGroupName(profileGroupName)
+	        .awsCredentialsProvider(AwsCredsProvider.getCredentials(roleArn, sessionName))
+	        .awsRegionToReportTo(awsRegion)
+	        .build()
+	        .start();
 
         // Publisher
         ScheduledExecutorService publisherScheduler = Executors.newScheduledThreadPool(1);
