@@ -98,12 +98,12 @@ public class Main {
         if (sharedS3 != null) {
             return sharedS3;
         } else {
-            return AmazonS3ClientBuilder.defaultClient();
+            return AmazonS3ClientBuilder.standard().withRegion(awsRegions).build();
         }
     }
 
     static AmazonSQS sqsClient() {
-        return AmazonSQSClientBuilder.defaultClient();
+        return AmazonSQSClientBuilder.standard().withRegion(awsRegions).build();
     }
 
     static ObjectMapper objectMapper() {
