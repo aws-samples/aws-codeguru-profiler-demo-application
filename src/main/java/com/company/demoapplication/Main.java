@@ -79,6 +79,7 @@ public class Main {
 	        .profilingGroupName(profileGroupName)
 	        .awsCredentialsProvider(AwsCredsProvider.getCredentials(roleArn, sessionName))
 	        .awsRegionToReportTo(awsRegion)
+		.withHeapSummary(true)
 	        .build()
 	        .start();
 
