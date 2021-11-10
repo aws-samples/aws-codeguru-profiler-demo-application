@@ -32,7 +32,7 @@ jobs:
       uses: aws-actions/codeguru-reviewer@v1.1
       continue-on-error: false
       with:          
-        s3_bucket: github-profiler-demo-048169001733-uw2 bucket
+        s3_bucket: 	guru-reviewer-github-profiler-demo-048169001733-uw2
         build_path: ./target/classes
 
     - name: Upload review result
