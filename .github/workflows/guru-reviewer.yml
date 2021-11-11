@@ -5,6 +5,7 @@ on: [push]
 permissions:
     id-token: write
     contents: write
+    security-events: write 
 
 jobs:
   build:
