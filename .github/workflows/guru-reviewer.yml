@@ -4,32 +4,38 @@ on: [push]
 
 permissions:
     id-token: write
-    contents: write
+    contents: read
     security-events: write 
 
 jobs:
   build:
-    name: Clone your repository
+    name: Run CodeGuru Reviewer
     runs-on: ubuntu-latest
     steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      id: iam-role
+      with:
+        role-to-assume: arn:aws:iam::048169001733:role/GuruGitHubCICDRole
+        aws-region: us-west-2
+    
     - uses: actions/checkout@v2
+      if: steps.iam-role.outcome == 'success'
       with:
         fetch-depth: 0
-        submodules: 'true'
+
     - name: Set up JDK 1.8
+      if: steps.iam-role.outcome == 'success'
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
     - name: Build with Maven
+      if: steps.iam-role.outcome == 'success'
       run: mvn compile -DskipTests
 
-    - name: Configure AWS credentials from Test account
-      uses: aws-actions/configure-aws-credentials@master
-      with:
-        role-to-assume: arn:aws:iam::048169001733:role/GuruGitHubCICDRole
-        aws-region: us-west-2
-
     - name: CodeGuru Reviewer
+      if: steps.iam-role.outcome == 'success'
+      id: codeguru
       uses: aws-actions/codeguru-reviewer@v1.1
       continue-on-error: false
       with:          
@@ -37,6 +43,7 @@ jobs:
         build_path: ./target/classes
 
     - name: Upload review result
+      if: steps.iam-role.outcome == 'success' && steps.codeguru.outcome == 'success'
       uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: codeguru-results.sarif.json
