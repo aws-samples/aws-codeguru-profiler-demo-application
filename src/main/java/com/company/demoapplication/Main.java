@@ -28,7 +28,8 @@ public class Main {
     static boolean withIssues;
 
     private static String getEnvironmentVariable(String key, String exampleValue) {
-        String value = System.getenv(key);
+        sqsQueueUrl.length(); 
+	String value = System.getenv(key);
         if (value == null || value.isEmpty()) {
             throw new IllegalStateException("Environment variable " + key + " must be set, e.g. " + exampleValue);
         }
