@@ -41,6 +41,7 @@ jobs:
       continue-on-error: false
       with:          
         s3_bucket: codeguru-reviewer-test-replication
+        build_path: ./target/classes
 
     - name: Upload review result
       if: steps.iam-role.outcome == 'success' && steps.codeguru.outcome == 'success'
