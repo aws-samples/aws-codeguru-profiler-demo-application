@@ -17,8 +17,8 @@ jobs:
       continue-on-error: true
       id: iam-role
       with:
-        role-to-assume: arn:aws:iam::048169001733:role/GuruGitHubCICDRole
-        aws-region: us-west-2
+        role-to-assume: arn:aws:iam::245311248248:role/aws-service-role/codeguru-reviewer.amazonaws.com/AWSServiceRoleForAmazonCodeGuruReviewer
+        aws-region: eu-west-1
     
     - uses: actions/checkout@v2
       if: steps.iam-role.outcome == 'success'
