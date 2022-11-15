@@ -40,7 +40,7 @@ jobs:
       uses: aws-actions/codeguru-reviewer@v1.1
       continue-on-error: false
       with:          
-        s3_bucket: codeguru-reviewermyactions-bucket-replication
+        s3_bucket: codeguru-reviewer-test-replication
         build_path: ./target/classes
 
     - name: Upload review result
