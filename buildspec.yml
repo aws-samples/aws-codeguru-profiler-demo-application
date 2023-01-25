@@ -1,0 +1,51 @@
+---
+version: 0.2
+phases:
+  install:
+    commands:
+      - curl -sS -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
+      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      - chmod +x ./kubectl ./aws-iam-authenticator
+      - export PATH=$PWD/:$PATH
+      - yum -y install jq python3-pip python3-dev && pip3 install --upgrade awscli
+  pre_build:
+      commands:
+        - $(aws ecr get-login --no-include-email)
+        - export KUBECONFIG=$HOME/.kube/config
+        - aws s3 cp s3://338918620411-account-bucket/DemoApplication-1.0-jar-with-dependencies.jar .
+
+  build:
+    commands:
+      - ls -xtra
+      - echo "Contents of Dockerfile"
+      - cat Dockerfile
+      - echo Got the following IAM_ROLE env $IAM_ROLE
+      - echo Got the following SQS_URL env $SQS_URL
+      - echo Got the following S3_BUCKET env $S3_BUCKET
+      
+      # building Docker image without-issues
+      - docker build -f Dockerfile -t codeguru-java-app-deployment-without-issues --build-arg ISSUE_FLAG="without-issues" --build-arg IAM_ROLE=$IAM_ROLE --build-arg SQS_URL=$SQS_URL  --build-arg S3_BUCKET=$S3_BUCKET .
+      - docker tag codeguru-java-app-deployment-without-issues:latest 338918620411.dkr.ecr.eu-west-1.amazonaws.com/codeguru-java-app-deployment-without-issues:latest
+      - docker push 338918620411.dkr.ecr.eu-west-1.amazonaws.com/codeguru-java-app-deployment-without-issues:latest
+      # building Docker image with-issues
+      - docker build -f Dockerfile -t codeguru-java-app-deployment-with-issues --build-arg ISSUE_FLAG="with-issues" --build-arg IAM_ROLE=$IAM_ROLE --build-arg SQS_URL=$SQS_URL --build-arg S3_BUCKET=$S3_BUCKET .
+      - docker tag codeguru-java-app-deployment-with-issues:latest 338918620411.dkr.ecr.eu-west-1.amazonaws.com/codeguru-java-app-deployment-with-issues:latest
+      - docker push 338918620411.dkr.ecr.eu-west-1.amazonaws.com/codeguru-java-app-deployment-with-issues:latest
+  
+  post_build:
+    commands:
+      - CREDENTIALS=$(aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900)
+      - export AWS_ACCESS_KEY_ID="$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
+      - export AWS_SECRET_ACCESS_KEY="$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')"
+      - export AWS_SESSION_TOKEN="$(echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken')"
+      - export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')
+      - echo $AWS_ACCESS_KEY_ID $AWS_EXPIRATION
+      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
+      - kubectl config get-contexts
+      - kubectl get nodes
+      - kubectl apply -f codeguru-java-app-deployment-without-issues.yaml
+      - kubectl apply -f codeguru-java-app-deployment-with-issues.yaml
+      - kubectl get all -n default
+      - echo $EKS_KUBECTL_ROLE_ARN:$EKS_CLUSTER_NAME > build.json
+artifacts:
+  files: build.json
