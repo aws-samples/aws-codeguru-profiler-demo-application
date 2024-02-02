@@ -39,7 +39,7 @@ uploading the result back to S3.
 
 Make sure you have installed the latest version of [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html).
 
-Setup the required components by running the following ```aws``` commands:
+Setup the required components by running the following `aws` commands:
 
 1. Create two profiling groups in CodeGuru Profiler, named `DemoApplication-WithIssues` and `DemoApplication-WithoutIssues`
 2. Create an SQS queue
@@ -60,7 +60,7 @@ aws sqs create-queue --queue-name DemoApplicationQueue
 The demo application can be run in two modes: `with-issues` and `without-issues`. Thus, you can compare how an
 optimized version of the application compares to one with performance issues.
 
-* To run the `with-issues` version, use the following instructions. Remember to replace `YOUR-ACCOUNT-ID`, `YOUR-AWS-REGION` and `YOUR-BUCKET-REPLACE-ME` as appropriate.
+- To run the `with-issues` version, use the following instructions. Remember to replace `YOUR-ACCOUNT-ID`, `YOUR-AWS-REGION` and `YOUR-BUCKET-REPLACE-ME` as appropriate.
 
 ```bash
 # These need to be set according to your setup:
@@ -71,11 +71,11 @@ export AWS_CODEGURU_TARGET_REGION=YOUR-AWS-REGION
 # Run the demo!
 export AWS_CODEGURU_PROFILER_GROUP_NAME=DemoApplication-WithIssues
 mvn clean install # generates the DemoApplication-1.0-jar-with-dependencies.jar
-java -javaagent:codeguru-profiler-java-agent-standalone-1.2.2.jar \
+java -javaagent:codeguru-profiler-java-agent-standalone-1.2.3.jar \
   -jar target/DemoApplication-1.0-jar-with-dependencies.jar with-issues
 ```
 
-* To run the `without-issues` version, use the following instructions. Remember to replace `YOUR-ACCOUNT-ID`, `YOUR-AWS-REGION` and `YOUR-BUCKET-REPLACE-ME` as appropriate.
+- To run the `without-issues` version, use the following instructions. Remember to replace `YOUR-ACCOUNT-ID`, `YOUR-AWS-REGION` and `YOUR-BUCKET-REPLACE-ME` as appropriate.
 
 ```bash
 # These need to be set according to your setup:
@@ -86,7 +86,7 @@ export AWS_CODEGURU_TARGET_REGION=YOUR-AWS-REGION
 # Run the demo!
 export AWS_CODEGURU_PROFILER_GROUP_NAME=DemoApplication-WithoutIssues
 mvn clean install # generates the DemoApplication-1.0-jar-with-dependencies.jar
-java -javaagent:codeguru-profiler-java-agent-standalone-1.2.2.jar \
+java -javaagent:codeguru-profiler-java-agent-standalone-1.2.3.jar \
   -jar target/DemoApplication-1.0-jar-with-dependencies.jar without-issues
 ```
 
